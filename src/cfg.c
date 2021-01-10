@@ -65,7 +65,7 @@ cfg_init(void)
   strncpy(cfg.ttymode, DEFAULT_MODE, INTBUFSIZE);
 #ifdef TRXCTL
   cfg.trxcntl = TRX_ADDC;
-  *cfg.trxcntl_file = '\0';
+  cfg.tx_enable_pin = 0;
 #endif
   strncpy(cfg.serveraddr, DEFAULT_SERVERADDR, INTBUFSIZE);
   cfg.serverport = DEFAULT_SERVERPORT;
