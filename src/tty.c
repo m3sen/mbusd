@@ -35,8 +35,6 @@
 
 #define IN  0
 #define OUT 1
-#define LOW  0
-#define HIGH 1
 
 extern cfg_t cfg;
 
@@ -634,7 +632,7 @@ GPIOWrite(int pin, int value)
 		return(-1);
 	}
 
-	if (1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1)) {
+	if (1 != write(fd, &s_values_str[value ? 1 : 0], 1)) {
 		logw(2, "Failed to write value!\n");
 		return(-1);
 	}
