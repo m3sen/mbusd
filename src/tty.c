@@ -33,9 +33,18 @@
 
 #include "tty.h"
 
+#define IN  0
+#define OUT 1
+
 extern cfg_t cfg;
 
 static int tty_break;
+
+static int GPIOExport(int pin);
+static int GPIOUnexport(int pin);
+static int GPIODirection(int pin, int dir);
+static int GPIORead(int pin);
+static int GPIOWrite(int pin, int value);
 
 /*
  * Flag signal SIG
@@ -67,6 +76,18 @@ tty_init(ttydata_t *mod)
   }
 #ifdef TRXCTL
   mod->trxcntl = cfg.trxcntl;
+  switch (cfg.trxcntl) {
+  case TRX_SYSFS_1:
+  case TRX_SYSFS_0:
+      GPIOExport(cfg.tx_enable_pin);
+      GPIODirection(cfg.tx_enable_pin, OUT);
+      break;
+  case TRX_ADDC:
+  case TRX_RTS:
+  default:
+      break;
+  }
+
 #endif
 }
 
@@ -408,6 +429,21 @@ tty_close(ttydata_t *mod)
   int buferr;
   char *ttyname = tty_get_name(mod->port);
 #endif
+
+#ifdef TRXCTL
+  switch (cfg.trxcntl) {
+  case TRX_SYSFS_1:
+  case TRX_SYSFS_0:
+      GPIOUnexport(cfg.tx_enable_pin);
+      break;
+  case TRX_ADDC:
+  case TRX_RTS:
+  default:
+      break;
+  }
+
+#endif
+
   if (mod->fd < 0)
     return RC_ACLOSE;       /* already closed */
   tty_cooked(mod);
@@ -451,9 +487,11 @@ tty_set_rts(int fd)
 		int mstat = TIOCM_RTS;
 		ioctl(fd, TIOCMBIS, &mstat);
 	} else if ( TRX_SYSFS_1 == cfg.trxcntl) {
-		sysfs_gpio_set(cfg.trxcntl_file,"1");
+        GPIOWrite(cfg.tx_enable_pin, 1);
+		//sysfs_gpio_set(cfg.trxcntl_file,"1");
 	} else if ( TRX_SYSFS_0 == cfg.trxcntl) {
-		sysfs_gpio_set(cfg.trxcntl_file,"0");
+        GPIOWrite(cfg.tx_enable_pin, 0);
+		//sysfs_gpio_set(cfg.trxcntl_file,"0");
 	}
 }
 
@@ -465,9 +503,11 @@ tty_clr_rts(int fd)
 		int mstat = TIOCM_RTS;
 		ioctl(fd, TIOCMBIC, &mstat);
 	} else if ( TRX_SYSFS_1 == cfg.trxcntl) {
-		sysfs_gpio_set(cfg.trxcntl_file,"0");
+        GPIOWrite(cfg.tx_enable_pin, 0);
+		//sysfs_gpio_set(cfg.trxcntl_file,"0");
 	} else if ( TRX_SYSFS_0 == cfg.trxcntl) {
-		sysfs_gpio_set(cfg.trxcntl_file,"1");
+        GPIOWrite(cfg.tx_enable_pin, 1);
+		//sysfs_gpio_set(cfg.trxcntl_file,"1");
 	}
 }
 #endif
@@ -488,3 +528,115 @@ tty_delay(int usec)
   } while (ts < usec && !tty_break);
 }
 
+static int
+GPIOExport(int pin)
+{
+#define BUFFER_MAX 3
+	char buffer[BUFFER_MAX];
+	int bytes_written;
+	int fd;
+
+	fd = open("/sys/class/gpio/export", O_WRONLY);
+	if (-1 == fd) {
+		logw(2, "Failed to open export for writing!\n");
+		return(-1);
+	}
+
+	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
+	write(fd, buffer, bytes_written);
+	close(fd);
+	return(0);
+}
+
+static int
+GPIOUnexport(int pin)
+{
+	char buffer[BUFFER_MAX];
+	int bytes_written;
+	int fd;
+
+	fd = open("/sys/class/gpio/unexport", O_WRONLY);
+	if (-1 == fd) {
+		logw(2, "Failed to open unexport for writing!\n");
+		return(-1);
+	}
+
+	bytes_written = snprintf(buffer, BUFFER_MAX, "%d", pin);
+	write(fd, buffer, bytes_written);
+	close(fd);
+	return(0);
+}
+
+static int
+GPIODirection(int pin, int dir)
+{
+	static const char s_directions_str[] = "in\0out";
+
+#define DIRECTION_MAX 35
+	char path[DIRECTION_MAX];
+	int fd;
+
+	snprintf(path, DIRECTION_MAX, "/sys/class/gpio/gpio%d/direction", pin);
+	fd = open(path, O_WRONLY);
+	if (-1 == fd) {
+		logw(2, "Failed to open gpio direction for writing!\n");
+		return(-1);
+	}
+
+	if (-1 == write(fd, &s_directions_str[IN == dir ? 0 : 3], IN == dir ? 2 : 3)) {
+		logw(2, "Failed to set direction!\n");
+		return(-1);
+	}
+
+	close(fd);
+	return(0);
+}
+
+static int
+GPIORead(int pin)
+{
+#define VALUE_MAX 30
+	char path[VALUE_MAX];
+	char value_str[3];
+	int fd;
+
+	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
+	fd = open(path, O_RDONLY);
+	if (-1 == fd) {
+		logw(2, "Failed to open gpio value for reading!\n");
+		return(-1);
+	}
+
+	if (-1 == read(fd, value_str, 3)) {
+		logw(2, "Failed to read value!\n");
+		return(-1);
+	}
+
+	close(fd);
+
+	return(atoi(value_str));
+}
+
+static int
+GPIOWrite(int pin, int value)
+{
+	static const char s_values_str[] = "01";
+
+	char path[VALUE_MAX];
+	int fd;
+
+	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
+	fd = open(path, O_WRONLY);
+	if (-1 == fd) {
+		logw(2, "Failed to open gpio value for writing!\n");
+		return(-1);
+	}
+
+	if (1 != write(fd, &s_values_str[LOW == value ? 0 : 1], 1)) {
+		logw(2, "Failed to write value!\n");
+		return(-1);
+	}
+
+	close(fd);
+	return(0);
+}

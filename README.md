@@ -74,11 +74,11 @@ Usage:
        -m mode
               Specifies serial port mode (like 8N1).
        -t     Enable RTS RS-485 data direction control (if not disabled while compile).
-       -y file
-              Enable RS-485 direction data direction control by writing '1' to file
+       -y gpio
+              Specify the gpio pin number for enabling RS-485 direction data direction control by writing '1' to file
               for transmitter enable and '0' to file for transmitter disable
-       -Y file
-              Enable RS-485 direction data direction control by writing '0' to file
+       -Y gpio
+              Specify the gpio pin number for enabling RS-485 direction data direction control by writing '0' to file
               for transmitter enable and '1' to file for transmitter disable
        -A address
              Specifies TCP address to bind (default 0.0.0.0).

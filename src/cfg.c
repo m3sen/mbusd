@@ -204,17 +204,25 @@ cfg_handle_param(char *name, char *value)
       return 0;
     }
   }
-  else if (CFG_NAME_MATCH("trx_sysfile"))
+  else if (CFG_NAME_MATCH("txe"))
   {
-    strncpy(cfg.trxcntl_file, value, INTBUFSIZE);
+  char* end;
+  cfg.tx_enable_pin = strtoul(value, &end, 0);
+  if (!cfg.tx_enable_pin || value == end || '\0' != *end)
+  {
+      CFG_ERR("invalid gpio pin: %s", value);
+      return 0;
+  }
+  
 #endif
 #ifdef LOG
   }
   else if (CFG_NAME_MATCH("loglevel"))
   {
-    cfg.dbglvl = (char)strtol(optarg, NULL, 0);
+    cfg.dbglvl = (char)strtol(value, NULL, 0);
 #endif
   }
+
   else {
     /* Unknown parameter name */
     CFG_ERR("unknown parameter: %s", name);

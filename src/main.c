@@ -211,11 +211,23 @@ main(int argc, char *argv[])
         break;
       case 'y':
         cfg.trxcntl = TRX_SYSFS_1;
-        strncpy(cfg.trxcntl_file, optarg, INTBUFSIZE);
+        cfg.tx_enable_pin = strtoul(optarg, &end, 10);
+        if (!cfg.tx_enable_pin || optarg == end || '\0' != *end)
+        {
+            printf("%s: -s: invalid gpio pin number (%s)\n", exename, optarg);
+            exit(-1);
+        }
+        //strncpy(cfg.trxcntl_file, optarg, INTBUFSIZE);
 	break;
       case 'Y':
         cfg.trxcntl = TRX_SYSFS_0;
-        strncpy(cfg.trxcntl_file, optarg, INTBUFSIZE);
+        cfg.tx_enable_pin = strtoul(optarg, &end, 10);
+        if (!cfg.tx_enable_pin || optarg == end || '\0' != *end)
+        {
+            printf("%s: -s: invalid gpio pin number (%s)\n", exename, optarg);
+            exit(-1);
+        }
+        //strncpy(cfg.trxcntl_file, optarg, INTBUFSIZE);
 	break;
 #endif
 #ifdef LOG
