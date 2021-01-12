@@ -504,10 +504,10 @@ tty_clr_rts(int fd)
 		ioctl(fd, TIOCMBIC, &mstat);
 	} else if ( TRX_SYSFS_1 == cfg.trxcntl) {
         GPIOWrite(cfg.tx_enable_pin, 0);
-		//sysfs_gpio_set(cfg.trxcntl_file,"0");
+	//sysfs_gpio_set(cfg.trxcntl_file,"0");
 	} else if ( TRX_SYSFS_0 == cfg.trxcntl) {
         GPIOWrite(cfg.tx_enable_pin, 1);
-		//sysfs_gpio_set(cfg.trxcntl_file,"1");
+	//sysfs_gpio_set(cfg.trxcntl_file,"1");
 	}
 }
 #endif
@@ -637,6 +637,7 @@ GPIOWrite(int pin, int value)
 		return(-1);
 	}
 
+	logw(2, "set %d to %d\n",value,pin);
 	close(fd);
 	return(0);
 }

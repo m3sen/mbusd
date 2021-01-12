@@ -32,8 +32,8 @@ class TestModbusRequests(unittest.TestCase):
         cls.mbs.start()
 
         cls.log.debug("3. run mbusd to be tested with the binary:%s" % MBUSD_BINARY)
-        cls.mbusd_main = Popen([MBUSD_BINARY, "-d", "-L/tmp/mbusd.log", "-v9", "-p/dev/ttyAMA0", "-s9600", "-y/sys/class/gpio/gpio18/value", "-P" + str(MBUSD_PORT)], stdout=PIPE, stderr=STDOUT)
-        #cls.mbusd_main = Popen([MBUSD_BINARY, "-d", "-L/tmp/mbusd.log", "-v9", "-p/dev/ttyAMA0", "-s9600", "-P" + str(MBUSD_PORT)], stdout=PIPE, stderr=STDOUT)
+        cls.mbusd_main = Popen([MBUSD_BINARY, "-d", "-L/tmp/mbusd.log", "-v9", "-p/dev/ttyAMA0", "-s9600", "-y18", "-P" + str(MBUSD_PORT)], stdout=PIPE, stderr=STDOUT)
+        #cls.mbusd_main = Popen([MBUSD_BINARY, "-d", "-L/tmp/mbusd.log", "-v9", "-p/dev/ttyUSB0", "-s9600", "-P" + str(MBUSD_PORT)], stdout=PIPE, stderr=STDOUT)
         # wait a little bit for mbusd to come up
         # alternatively do a poll for the socket
         #    https://stackoverflow.com/questions/667640/how-to-tell-if-a-connection-is-dead-in-python/667702#667702
@@ -79,7 +79,7 @@ class TestModbusRequests(unittest.TestCase):
         #self.assertEqual(result.value, bit1, result)
         result = self.client.read_coils(16, 1, unit=63)
         self.assertIsInstance(result, ReadCoilsResponse, result)
-        self.assertEqual(result.bits[0], bit1, result)
+        self.assertEqual(result.bits[0], 0, result)
 
    # def test_discreteInputs(self):
    #     # 02 Read Discrete Inputs
