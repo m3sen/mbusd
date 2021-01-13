@@ -58,10 +58,12 @@ class TestModbusRequests(unittest.TestCase):
 
 
     def test_coils(self):
-   #     bits = [random.randrange(2)>0 for i in range(8)]
+        #bits = [random.randrange(2)>0 for i in range(3)]
+        bits =[1,0,0,0,0,0,0,0]
+        print(bits)
 
    #     # 15 Write Multiple Coils
-   #     result = self.client.write_coils(0, bits, unit=1)
+        result = self.client.write_coil(0, 0, unit=0)
    #     self.assertIsInstance(result, WriteMultipleCoilsResponse, result)
    #     self.assertEqual(result.address, 0, result)
    #     self.assertEqual(result.count, 8, result)
@@ -72,14 +74,15 @@ class TestModbusRequests(unittest.TestCase):
    #     self.assertEqual(result.bits, bits, result)
 
    #     # 05 Write Single Coil
-        bit1 = 1 #not bits[0]
-        result = self.client.write_coil(16, bit1, unit=0)
+        #bit1 = #not bits[0]
+        result = self.client.write_coils(16, bits, unit=0)
         #self.assertIsInstance(result, WriteSingleCoilResponse, result)
         #self.assertEqual(result.address, 17, result)
         #self.assertEqual(result.value, bit1, result)
-        result = self.client.read_coils(16, 1, unit=63)
+        result = self.client.read_coils(16, 8, unit=63)
+        print(result.bits)
         self.assertIsInstance(result, ReadCoilsResponse, result)
-        self.assertEqual(result.bits[0], 0, result)
+        self.assertEqual(result.bits, bits, result)
 
    # def test_discreteInputs(self):
    #     # 02 Read Discrete Inputs

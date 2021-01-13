@@ -7,7 +7,9 @@
 ########## Serial port settings #############
 
 # Serial port device name
-device = /dev/ttyS0
+# device = /dev/ttyS0
+# device = /dev/ttyUSB0
+# device = /dev/ttyAMA0
 
 # Serial port speed
 speed = 9600
@@ -16,10 +18,11 @@ speed = 9600
 mode = 8n1
 
 # RS-485 data direction control type (addc, rts, sysfs_0, sysfs_1)
-trx_control = addc
+# trx_control = addc for ttyUSB0
+trx_control = sysfs_1 #for ttyAMA0, GPIO18 will be used for TXE
 
 # Specify gpio pin number added by kmshim, 2021/01/10
-txe = 18
+txe = 18 # for ttyAMA0, GPIO18 will be used for TXE
 
 ############# TCP port settings #############
 
