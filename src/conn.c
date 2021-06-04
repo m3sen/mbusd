@@ -49,7 +49,7 @@ conn_t *actconn; /* last active connection */
 int     max_sd;  /* major descriptor in the select() sets */
 
 void    conn_tty_start(ttydata_t *tty, conn_t *conn);
-ssize_t conn_read(int d, void *buf, size_t nbytes, int istty);
+ssize_t conn_read(int d, void *buf, size_t nbytes, uint8_t ui8ID, int istty);
 ssize_t conn_write(int d, void *buf, size_t nbytes, int istty);
 void    conn_fix_request_header_len(conn_t *conn, unsigned char len);
 
@@ -208,9 +208,9 @@ void conn_tty_start(ttydata_t *tty, conn_t *conn) {
  *         RC_ERR in case of error.
  */
 ssize_t
-conn_read(int d, void *buf, size_t nbytes, int istty) {
+conn_read(int d, void *buf, size_t nbytes, uint8_t ui8ID, int istty) {
     int rc;
-    if (istty) {
+    if (istty && ui8ID == RPI_MODBUS_ID) {
         memcpy(buf, gui8Response, nbytes);
         rc = nbytes;
     } else {
@@ -304,7 +304,7 @@ void conn_loop(void) {
     struct itimerval timer;
 
     InitGPIO();
-    
+
     /* Configure the timer to expire after 250 msec... */
     timer.it_value.tv_sec  = 1;
     timer.it_value.tv_usec = 0;
@@ -589,7 +589,7 @@ void conn_loop(void) {
                     continue;
                 }
 
-                rc = conn_read(tty.fd, tty.rxbuf + tty.ptrbuf, tty.rxlen - tty.ptrbuf + tty.rxoffset, 1);
+                rc = conn_read(tty.fd, tty.rxbuf + tty.ptrbuf, tty.rxlen - tty.ptrbuf + tty.rxoffset, tty.txbuf[MB_SER_PDU_ADDR_OFF], 1);
 
                 if (rc <= 0) { /* error - make attempt to reinitialize serial port */
 #ifdef LOG
@@ -639,8 +639,8 @@ void conn_loop(void) {
                 logw(5, "tty: read %d bytes of %d, offset %d", tty.ptrbuf, tty.rxlen + tty.rxoffset, tty.rxoffset);
                 if (tty.ptrbuf == tty.rxlen + tty.rxoffset) state_tty_set(&tty, TTY_PROC);
 
-            } else if ((tty.state != TTY_PROC) && (tty.txbuf[MB_SER_PDU_ADDR_OFF] != RPI_MODBUS_ID)) { /* drop unexpected tty data */
-                if ((rc = conn_read(tty.fd, tty.rxbuf, BUFSIZE, 1)) <= 0) {                            /* error - make attempt to reinitialize serial port */
+            } else if ((tty.state != TTY_PROC) && (tty.txbuf[MB_SER_PDU_ADDR_OFF] != RPI_MODBUS_ID)) {      /* drop unexpected tty data */
+                if ((rc = conn_read(tty.fd, tty.rxbuf, BUFSIZE, tty.rxbuf[MB_SER_PDU_ADDR_OFF], 1)) <= 0) { /* error - make attempt to reinitialize serial port */
 #ifdef LOG
                     logw(0, "tty: error in read() (%s)", rc ? strerror(errno) : "port closed");
 #endif
@@ -720,7 +720,7 @@ void conn_loop(void) {
             case CONN_RQST_NVAL:
             case CONN_RQST_TAIL:
                 if (FD_ISSET(curconn->sd, &sdsetrd)) {
-                    rc = conn_read(curconn->sd, curconn->buf + curconn->ctr, curconn->read_len - curconn->ctr, 0);
+                    rc = conn_read(curconn->sd, curconn->buf + curconn->ctr, curconn->read_len - curconn->ctr, tty.txbuf[MB_SER_PDU_ADDR_OFF], 0);
                     if (rc <= 0) { /* error - drop this connection and go to next queue element */
                         curconn = conn_close(curconn);
                         break;
