@@ -1,0 +1,5 @@
+{
+    "files.associations": {
+        "bcm_host.h": "c"
+    }
+}

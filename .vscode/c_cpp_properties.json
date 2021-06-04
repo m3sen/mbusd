@@ -3,12 +3,14 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "/opt/vc/include/**"
             ],
             "defines": [
                 "TRXCTL",
                 "LOG",
-                "DEBUB_LOG"
+                "DEBUB_LOG",
+                "DEBUG"
             ],
             "compilerPath": "/usr/bin/gcc",
             "cStandard": "gnu17",

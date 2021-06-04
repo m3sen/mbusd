@@ -18,6 +18,9 @@ SET(CMAKE_C_FLAGS_DEBUG     "${BASIC_C_FLAGS} -g")
 add_definitions(-DPACKAGE="${PROJECT_NAME}" -DVERSION="${PROJECT_VERSION}")
 
 # user options
+INCLUDE_DIRECTORIES(/opt/vc/include)
+LINK_DIRECTORIES(/opt/vc/lib)
+LINK_LIBRARIES(rt bcm_host) 
 option (TRXCTL "Support RS-232 to RS-485 converter data direction control" ON)
 if(TRXCTL)
     add_definitions(-DTRXCTL)
@@ -69,6 +72,7 @@ set(mbusd_SOURCES
         src/state.c
         src/sig.c
         src/sock.c
+        src/m3sen_bcm2838_gpio.c
         )
 add_executable(mbusd ${mbusd_SOURCES})
 install(TARGETS mbusd DESTINATION bin)

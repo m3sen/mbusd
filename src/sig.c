@@ -80,14 +80,14 @@ sig_init(void)
   sa.sa_handler = sig_handler;
   sigaction(SIGINT, &sa, NULL);
 
+  sa.sa_handler = TimerHandler;
+  sigaction(SIGALRM, &sa, NULL);
+
   sa.sa_handler = SIG_IGN;
   sigaction(SIGPIPE, &sa, NULL);
 
   sa.sa_handler = SIG_IGN;
   sigaction(SIGCHLD, &sa, NULL);
-
-  sa.sa_handler = SIG_IGN;
-  sigaction(SIGALRM, &sa, NULL);
 
   sa.sa_handler = SIG_IGN;
   sigaction(SIGUSR1, &sa, NULL);

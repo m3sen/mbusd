@@ -116,6 +116,6 @@ logw(int level, char *fmt, ...)
   strcpy(str + strsize++, "\n");
   if (!isdaemon) fprintf(stderr, "%s", str);
   if (*logfullname == '\0') return;
-  log_app(logfullname, str);
+  // log_app(logfullname, str);
 }
 #endif
