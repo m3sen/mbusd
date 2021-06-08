@@ -304,6 +304,7 @@ void conn_loop(void) {
     struct itimerval timer;
 
     InitGPIO();
+    RetriveStatus();
 
     /* Configure the timer to expire after 250 msec... */
     timer.it_value.tv_sec  = 1;

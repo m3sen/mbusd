@@ -277,7 +277,7 @@ typedef union structRTUCoils {
         uint8_t b27_RES : 1;               /*!< TBD */
         uint8_t b28_RES : 1;               /*!< TBD */
         uint8_t b29_RES : 1;               /*!< TBD */
-        uint8_t b30_SIB_ON : 1;            /*!< TBD */
+        uint8_t b30_ID_DISPLAY : 1;            /*!< TBD */
         uint8_t b31_ILL_OVERCURRENT : 1;   /*!< TBD */
         uint8_t b32_GlobalMotorResync : 1; /*!< TBD */
         uint8_t b33_GlobalMotorStop : 1;   /*!< TBD */
@@ -325,6 +325,7 @@ uint32_t     MimicModBus(uint8_t *buf, uint32_t ui32Length);
 eMBErrorCode HoldingCallBack(uint8_t *pucRegBuffer, uint16_t usAddress, uint16_t usNRegs, eMBRegisterMode eMode);
 eMBErrorCode CoilCallBack(uint8_t *pucRegBuffer, uint16_t usAddress, uint16_t usNCoils, eMBRegisterMode eMode);
 void TimerHandler(int signum);
+void RetriveStatus(void);
 //////////////////////////////////////////////////////////////////////////////////
 // Added by kmshim
 //////////////////////////////////////////////////////////////////////////////////
