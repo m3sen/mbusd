@@ -122,7 +122,7 @@ structRTUCoils_t gstCoils = {
         .b27_RES               = 0, /*!< TBD */
         .b28_RES               = 0, /*!< TBD */
         .b29_RES               = 0, /*!< TBD */
-        .b30_SIB_ON            = 1, /*!< TBD */
+        .b30_ID_DISPLAY        = 1, /*!< TBD */
         .b31_ILL_OVERCURRENT   = 0, /*!< TBD */
         .b32_GlobalMotorResync = 0, /*!< TBD */
         .b33_GlobalMotorStop   = 0, /*!< TBD */
@@ -184,13 +184,13 @@ structRTUCoils_t gstPrevCoils = {
         .b21_G_BLINKING        = 0, /*!< GREEN LED BLINKING */
         .b22_BZ_ON             = 0, /*!< TBD */
         .b23_iLL_ON            = 0, /*!< Illuminator ON/OFF */
-        .b24_RES               = 0, /*!< Illuminator DIMMING */
+        .b24_RES               = 0, /*!< TBD */
         .b25_MOTOR             = 0, /*!< TBD */
         .b26_RES               = 0, /*!< TBD */
         .b27_RES               = 0, /*!< TBD */
         .b28_RES               = 0, /*!< TBD */
         .b29_RES               = 0, /*!< TBD */
-        .b30_SIB_ON            = 0, /*!< TBD */
+        .b30_ID_DISPLAY        = 0, /*!< TBD */
         .b31_ILL_OVERCURRENT   = 0, /*!< TBD */
         .b32_GlobalMotorResync = 0, /*!< TBD */
         .b33_GlobalMotorStop   = 0, /*!< TBD */
@@ -266,6 +266,23 @@ uint16_t gui16HoldingReg[REG_HOLDING_NREGS] =
 uint8_t *                 gpui8CoilBuf = (uint8_t *)&gstCoils.bits;
 eMBException              prveMBError2Exception(eMBErrorCode eErrorCode);
 static xMBFunctionHandler xFuncHandlers[MB_FUNC_HANDLERS_MAX];
+
+void RetriveStatus(void) {
+    gstCoils.bits.b50_JBB1_ON  = ReadPin(JBB1);
+    gstCoils.bits.b51_JBB2_ON  = ReadPin(JBB2);
+    gstCoils.bits.b52_JBB3_ON  = ReadPin(JBB3);
+    gstCoils.bits.b53_JBB4_ON  = ReadPin(JBB4);
+    gstCoils.bits.b54_JBB5_ON  = ReadPin(JBB5);
+    gstCoils.bits.b55_JBB6_ON  = ReadPin(JBB6);
+    gstCoils.bits.b56_JBB7_ON  = ReadPin(JBB7);
+    gstCoils.bits.b57_JBB8_ON  = ReadPin(JBB8);
+    gstCoils.bits.b58_JBB9_ON  = ReadPin(JBB9);
+    gstCoils.bits.b59_JBB10_ON = ReadPin(JBB10);
+    gstCoils.bits.b16_R_ON     = ReadPin(RED);
+    gstCoils.bits.b17_Y_ON     = ReadPin(YELLOW);
+    gstCoils.bits.b18_G_ON     = ReadPin(GREEN);
+    logw(7, "JBB2 %d", gstCoils.bits.b51_JBB2_ON);
+}
 
 /* ----------------------- Start implementation -----------------------------*/
 void xMBUtilSetBits(uint8_t *ucByteBuf, uint16_t usBitOffset, uint8_t ucNBits, uint8_t ucValue) {
