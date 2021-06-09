@@ -31,6 +31,7 @@
  * $Id: modbus.c,v 1.3 2015/02/25 10:33:58 kapyar Exp $
  */
 
+#include <signal.h>
 #include "modbus.h"
 #include "conn.h"
 #include "m3sen_bcm2838_gpio.h"
@@ -897,8 +898,26 @@ void LEDHandler(void) {
     gstCoils.bits.b0_READY = true;
 }
 
+#include <sys/wait.h>
+void childSignal(int sig) {
+    logw(2,"signal:%d\n", sig);
+    gstPrevCoils.bits.b22_BZ_ON = gstCoils.bits.b22_BZ_ON = false;
+    while (waitpid(-1, NULL, WNOHANG) > 0);
+}
+
 void MelodyHandler(void) {
     // TBD
+    if ((gstPrevCoils.bits.b22_BZ_ON != gstCoils.bits.b22_BZ_ON) && gstCoils.bits.b22_BZ_ON) {
+        gstPrevCoils.bits.b22_BZ_ON = gstCoils.bits.b22_BZ_ON;
+        logw(2, "M3SE %d --> %df/usr/bin/omxplayer", gstPrevCoils.bits.b22_BZ_ON, gstCoils.bits.b22_BZ_ON);
+        pid_t pid;
+        pid = fork();
+        if (pid == 0) {
+            logw(2, "/usr/bin/omxplayer", "/home/pi/work/song/HBD3.mp3 P:%d, c:%d", getpid(), getppid());
+            char *args[] = {"omxplayer", "/home/pi/work/song/HBD3.mp3", NULL};
+            int ret = execv("/usr/bin/omxplayer", args);
+        }
+    }
 }
 
 void JBBPowerHandler(void) {

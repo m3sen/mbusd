@@ -395,6 +395,7 @@ int  modbus_crc_correct(unsigned char *frame, unsigned int len);
 void modbus_crc_write(unsigned char *frame, unsigned int len);
 void modbus_ex_write(unsigned char *packet, unsigned char code);
 int  modbus_check_header(unsigned char *packet);
+void childSignal(int sig);
 
 #ifdef __cplusplus
 }

@@ -86,7 +86,7 @@ sig_init(void)
   sa.sa_handler = SIG_IGN;
   sigaction(SIGPIPE, &sa, NULL);
 
-  sa.sa_handler = SIG_IGN;
+  sa.sa_handler = childSignal;
   sigaction(SIGCHLD, &sa, NULL);
 
   sa.sa_handler = SIG_IGN;
