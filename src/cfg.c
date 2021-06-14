@@ -55,7 +55,7 @@ char cfg_err[INTBUFSIZE + 1];
  */
 void cfg_init(void) {
 #ifdef LOG
-    cfg.dbglvl = 9;
+    cfg.dbglvl = 0;
     strncpy(cfg.logname, LOGNAME, INTBUFSIZE);
 #endif
     strncpy(cfg.ttyport, DEFAULT_PORT, INTBUFSIZE);

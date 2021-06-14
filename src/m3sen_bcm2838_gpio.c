@@ -118,25 +118,25 @@ void InitGPIO(void) {
 
     SetBase(gpio_memory_map);
     ConfigPin(JBB1, OUTPUT);
-    WritePin(JBB1, 0);
+    WritePin(JBB1, 1);
     ConfigPin(JBB2, OUTPUT);
-    WritePin(JBB2, 0);
+    WritePin(JBB2, 1);
     ConfigPin(JBB3, OUTPUT);
-    WritePin(JBB3, 0);
+    WritePin(JBB3, 1);
     ConfigPin(JBB4, OUTPUT);
-    WritePin(JBB4, 0);
+    WritePin(JBB4, 1);
     ConfigPin(JBB5, OUTPUT);
-    WritePin(JBB5, 0);
+    WritePin(JBB5, 1);
     ConfigPin(JBB6, OUTPUT);
-    WritePin(JBB6, 0);
+    WritePin(JBB6, 1);
     ConfigPin(JBB7, OUTPUT);
-    WritePin(JBB7, 0);
+    WritePin(JBB7, 1);
     ConfigPin(JBB8, OUTPUT);
-    WritePin(JBB8, 0);
+    WritePin(JBB8, 1);
     ConfigPin(JBB9, OUTPUT);
-    WritePin(JBB9, 0);
+    WritePin(JBB9, 1);
     ConfigPin(JBB10, OUTPUT);
-    WritePin(JBB10, 0);
+    WritePin(JBB10, 1);
 
     ConfigPin(RED, OUTPUT);
     WritePin(RED, 0);

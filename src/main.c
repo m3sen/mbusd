@@ -223,7 +223,7 @@ int main(int argc, char *argv[]) {
 #endif
 #ifdef LOG
         case 'v':
-            cfg.dbglvl = 9; //(char)strtol(optarg, NULL, 0);
+            cfg.dbglvl = (char)strtol(optarg, NULL, 0);
 #ifdef DEBUG
             if (cfg.dbglvl > 9) { /* report about invalid log level */
                 printf("%s: -v: invalid loglevel value"
