@@ -1,5 +1,7 @@
 {
     "files.associations": {
-        "bcm_host.h": "c"
+        "bcm_host.h": "c",
+        "tty.h": "c",
+        "globals.h": "c"
     }
 }

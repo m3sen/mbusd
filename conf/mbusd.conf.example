@@ -36,15 +36,15 @@ port = 502
 maxconn = 32
 
 # Connection timeout value in seconds
-timeout = 60
+timeout = 0
 
 ######### Request/response settings #########
 
 # Maximum number of request retries
-retries = 3
+retries = 0
 
 # Pause between requests in milliseconds
 pause = 100
 
 # Response wait time in milliseconds
-wait = 500
+wait = 100
