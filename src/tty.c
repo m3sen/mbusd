@@ -449,7 +449,7 @@ tty_set_rts(int fd)
 {
 	if ( TRX_RTS == cfg.trxcntl ) {
 		int mstat = TIOCM_RTS;
-		ioctl(fd, TIOCMBIS, &mstat);
+		ioctl(fd, TIOCMBIC, &mstat);
 	} else if ( TRX_SYSFS_1 == cfg.trxcntl) {
 		sysfs_gpio_set(cfg.trxcntl_file,"1");
 	} else if ( TRX_SYSFS_0 == cfg.trxcntl) {
@@ -463,7 +463,7 @@ tty_clr_rts(int fd)
 {
 	if ( TRX_RTS == cfg.trxcntl ) {
 		int mstat = TIOCM_RTS;
-		ioctl(fd, TIOCMBIC, &mstat);
+		ioctl(fd, TIOCMBIS, &mstat);
 	} else if ( TRX_SYSFS_1 == cfg.trxcntl) {
 		sysfs_gpio_set(cfg.trxcntl_file,"0");
 	} else if ( TRX_SYSFS_0 == cfg.trxcntl) {
