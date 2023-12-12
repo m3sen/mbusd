@@ -913,9 +913,12 @@ void MelodyHandler(void) {
         pid_t pid;
         pid = fork();
         if (pid == 0) {
-            logw(2, "/usr/bin/omxplayer", "/home/pi/work/song/HBD3.mp3 P:%d, c:%d", getpid(), getppid());
-            char *args[] = {"omxplayer", "/home/pi/work/song/HBD3.mp3", NULL};
-            int ret = execv("/usr/bin/omxplayer", args);
+            // logw(2, "/usr/bin/omxplayer", "/home/pi/work/song/HBD3.mp3 P:%d, c:%d", getpid(), getppid());
+            // char *args[] = {"omxplayer", "/home/pi/work/song/HBD3.mp3", NULL};
+            // int ret = execv("/usr/bin/omxplayer", args);
+
+            char *args[] = {"mpg123", "/home/pi/work/song/HBD3.mp3", NULL};
+            int ret = execv("/usr/bin/mpg123", args);
         }
     }
 }
